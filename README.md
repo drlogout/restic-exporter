@@ -12,26 +12,31 @@ In order to use it, first setup `node-exporter` to watch a directory. If you are
 on debian based systems, this can ususally be done by adding the
 `-collector.textfile.directory` option to `/etc/default/prometheus-node-exporter`:
 
-```
+```txt
 ARGS="-collector.textfile.directory=\"/var/lib/prometheus/node-exporter/\""
 ```
 
-Next, create a configuration file for `restic-exporter`:
+Next, create a .env file for `restic-exporter` with RESTIC_REPOSITORY, RESTIC_PASSWORD and additional variables needed:
 
-```yaml
-# restic-exporter.yaml
-'arbitrary-name-here':
-    repository: '/path/to/repo/here'
-    password: 'passwordToRepoGOesHere'
-    env:
-        FOO: 'bar'
+```sh
+# .env
+RESTIC_REPOSITORY=
+RESTIC_PASSWORD=
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_KEY=
+AWS_DEFAULT_REGION=
 ```
 
 Now, you can let `restic-exporter` generate a `.prom` file which in turn is picked
 up and exposed to prometheus by `node-exporter`.
 
-This will generate a single stat:
+```bash
+restic-exporter -name arbitrary-name-here
 ```
+
+This will generate a single stat:
+
+```txt
 restic_snapshot_timestamp{name="arbitrary-name-here"} 1.599849001e+09
 ```
 
