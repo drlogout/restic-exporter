@@ -19,11 +19,9 @@ type SnapshotResponse struct {
 }
 
 type Restic struct {
-	Binary     string
-	Name       string
-	Repository string
-	Password   string
-	Env        map[string]string
+	Binary string
+	Name   string
+	Env    map[string]string
 }
 
 func (restic Restic) Run(arguments []string, target interface{}) error {
@@ -31,11 +29,7 @@ func (restic Restic) Run(arguments []string, target interface{}) error {
 
 	log.Printf("[%s] %s %s", restic.Name, restic.Binary, arguments)
 	command := exec.Command(restic.Binary, arguments...)
-	command.Env = append(
-		os.Environ(),
-		fmt.Sprintf("RESTIC_REPOSITORY=%s", restic.Repository),
-		fmt.Sprintf("RESTIC_PASSWORD=%s", restic.Password),
-	)
+	command.Env = os.Environ()
 
 	for key, value := range restic.Env {
 		command.Env = append(
@@ -59,7 +53,13 @@ func (restic Restic) Run(arguments []string, target interface{}) error {
 
 func (restic Restic) SnapshotTimestamp() (int64, error) {
 	snapshots := make([]SnapshotResponse, 0)
-	err := restic.Run([]string{"snapshots", "latest"}, &snapshots)
+
+	args := []string{"snapshots", "latest"}
+	if *tag != "" {
+		args = append(args, "--tag", *tag)
+	}
+
+	err := restic.Run(args, &snapshots)
 	if err != nil {
 		return -1, err
 	}

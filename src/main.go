@@ -14,6 +14,7 @@ var (
 	envFile      = flag.String("env", ".env", "Path to env file (defaults to .env)")
 	output       = flag.String("output", "stats.txt", "File to export the stats to")
 	resticBinary = flag.String("restic-bin", "restic", "Location of the restic binary to use (defaults to loading the one in your PATH)")
+	tag          = flag.String("tag", "", "Tag to select latest snapshot")
 	errorLog     *log.Logger
 )
 
