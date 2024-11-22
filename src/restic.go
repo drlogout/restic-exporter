@@ -64,6 +64,10 @@ func (restic Restic) SnapshotTimestamp() (int64, error) {
 		return -1, err
 	}
 
+	if len(snapshots) == 0 {
+		return 0, fmt.Errorf("no snapshots found")
+	}
+
 	time, err := time.Parse(time.RFC3339Nano, snapshots[0].Time)
 	return time.Unix(), err
 }
